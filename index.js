@@ -55,6 +55,8 @@ async function run() {
             per_page: 100
         });
 
+        console.log(response.data);
+
         let branchNames = response.data
             .filter(d => !!d.ref)
             .map(d => d.ref.replace('refs/', '').replace('heads/', ''))
