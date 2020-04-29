@@ -57,7 +57,7 @@ async function run() {
 
         const branchNames = response.data
             .map(d => d.ref.replace('refs/', '').replace('heads/', ''))
-            .map(v => branchName(d))
+            .map(d => branchName(d))
             .filter(data => {
                 if(data.major == branchData.major && data.minor == branchData.minor && data.patch > branchData.patch) {
                     return true;
