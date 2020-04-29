@@ -56,6 +56,7 @@ async function run() {
         });
 
         let branchNames = response.data
+            .filter(d => !!d.ref)
             .map(d => d.ref.replace('refs/', '').replace('heads/', ''))
             .filter(d => {         
                 const data = getReleaseData(d);
