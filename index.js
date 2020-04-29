@@ -59,6 +59,10 @@ async function run() {
             .map(d => d.ref.replace('refs/', '').replace('heads/', ''))
             .map(d => getReleaseData(d))
             .filter(data => {
+                if(!data) {
+                    return false;
+                }
+
                 if(data.major == branchData.major && data.minor == branchData.minor && data.patch > branchData.patch) {
                     return true;
                 }
