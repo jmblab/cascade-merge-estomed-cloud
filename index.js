@@ -1,6 +1,21 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 
+function getReleaseData(branchName) {
+    const versionRegex = new RegExp('^(?<mainBranch>.*)\\/(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$');
+    const regexMatch = versionRegex.exec(branchName);
+
+    if(!regexMatch) {
+        return null;
+    }
+
+    const major = regexMatch.groups.major * 1;
+    const minor = regexMatch.groups.minor * 1;
+    const patch = regexMatch.groups.patch * 1;
+
+    return { major, minor, patch }
+}
+
 async function run() {
     try {
         const branchRefName = core.getInput('branch');
@@ -18,17 +33,16 @@ async function run() {
         console.log(`Current repo owner: ${repoOwner}`);
         console.log(`Current branch name: ${branchName}`);
     
-        const versionRegex = new RegExp('^(?<mainBranch>.*)\\/(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$');
-        const regexMatch = versionRegex.exec(branchName);
+        const branchData = getReleaseData(branchName);
     
-        if(!regexMatch) {
+        if(!branchData) {
             console.log('Not need cascade merge');
             return;
         }
     
-        const major = regexMatch.groups.major;
-        const minor = regexMatch.groups.minor;
-        const patch = regexMatch.groups.patch;
+        const major = branchData.major;
+        const minor = branchData.minor;
+        const patch = branchData.patch;
     
         console.log(`Major version: ${major}`);
         console.log(`Major version: ${minor}`);
@@ -41,7 +55,24 @@ async function run() {
             per_page: 100
         });
 
-        const branchNames = response.data.map(d => d.ref.replace('refs/', '').replace('heads/', ''));
+        const branchNames = response.data
+            .map(d => d.ref.replace('refs/', '').replace('heads/', ''))
+            .map(v => branchName(d))
+            .filter(data => {
+                if(data.major == branchData.major && data.minor == branchData.minor && data.patch > branchData.patch) {
+                    return true;
+                }
+
+                if(data.major == branchData.major && data.minor > branchData.minor) {
+                    return true;
+                }                
+
+                if(data.major > branchData.major) {
+                    return true;
+                }
+
+                return false;
+            });
 
         console.log(branchNames);
     } catch (error) {
