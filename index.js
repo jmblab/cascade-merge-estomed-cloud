@@ -34,9 +34,11 @@ async function run() {
         console.log(`Major version: ${minor}`);
         console.log(`Patch version: ${patch}`);
 
-        const response = await octokit.repos.listBranches({
+        const response = await octokit.git.listMatchingRefs({
             owner: repoOwner,
             repo: repoName,
+            ref: 'heads/release',
+            per_page: 100
         });
 
         console.log(response.data);
