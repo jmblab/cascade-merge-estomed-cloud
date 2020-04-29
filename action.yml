@@ -5,6 +5,14 @@ inputs:
     description: 'Repo secret key'
     required: true
     default: ''
+  branch:
+    description: 'Current branch'
+    required: true
+    default: ''
+  repo:
+    description: 'Current repo'
+    required: true
+    default: ''
 outputs:
   time: # id of output
     description: 'The time we greeted you'
