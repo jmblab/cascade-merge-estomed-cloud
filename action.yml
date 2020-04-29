@@ -1,12 +1,20 @@
 name: 'Hello World'
 description: 'Greet someone and record the time'
 inputs:
+  token:
+    description: 'Token'
+    required: true
+    default: ''
   branch:
     description: 'Current branch'
     required: true
     default: ''
   repo:
     description: 'Current repo'
+    required: true
+    default: ''
+  owner:
+    description: 'Owner repo'
     required: true
     default: ''
 outputs:
