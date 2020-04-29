@@ -53,9 +53,7 @@ async function run() {
             repo: repoName,
             ref: 'heads/release',
             per_page: 100
-        });
-
-        console.log(response.data);
+        });        
 
         let branchNames = response.data
             .filter(d => !!d.ref)
@@ -101,6 +99,8 @@ async function run() {
             });
 
         branchNamesToMerge = [...branchNames, 'master'];
+
+        console.log(branchNamesToMerge);
 
         let mergedBranch = branchName;
 
