@@ -55,7 +55,7 @@ async function run() {
             per_page: 100
         });
 
-        const branchNames = response.data
+        let branchNames = response.data
             .map(d => d.ref.replace('refs/', '').replace('heads/', ''))
             .map(d => getReleaseData(d))
             .filter(data => {
@@ -77,6 +77,8 @@ async function run() {
 
                 return false;
             });
+
+        branchNames = [...branchNames, 'master'];
 
         console.log(branchNames);
     } catch (error) {
