@@ -14,6 +14,7 @@ async function run() {
         const branchName = branchRefName.replace('refs/', '').replace('heads/', '');
     
         console.log(`Current repo name: ${repoName}`);
+        console.log(`Current repo owner: ${owner}`);
         console.log(`Current branch name: ${branchName}`);
     
         const versionRegex = new RegExp('^(?<mainBranch>.*)\\/(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$');
@@ -37,7 +38,7 @@ async function run() {
             repo: repoName,
         });
 
-        console.log(response);
+        console.log(response.data);
     } catch (error) {
         core.setFailed(error.message);
     }    
