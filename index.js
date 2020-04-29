@@ -80,7 +80,7 @@ async function run() {
 
         console.log(branchNames);
     } catch (error) {
-        core.setFailed(error.message);
+        core.setFailed(error);
     }    
 }
 
