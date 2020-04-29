@@ -4,10 +4,11 @@ const github = require('@actions/github');
 async function run() {
     try {
         const branchRefName = core.getInput('branch');
-        const repoName = core.getInput('repo');    
+        const repoNameWithOwner = core.getInput('repo');    
         const repoOwner = core.getInput('owner');    
         const token = core.getInput('token');
- 
+        const repoName = repoNameWithOwner.replace(`${repoOwner}/`, '');
+
         const octokit = new github.GitHub(token);
 
 
