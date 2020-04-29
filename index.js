@@ -77,11 +77,47 @@ async function run() {
                 }
 
                 return false;
+            })
+            .sort((da, db) => {
+                const a = getReleaseData(da);
+                const b = getReleaseData(db);
+
+                if(a.major > b.major) {
+                  return 1;
+                }
+              
+                if(a.major == b.major && a.minor > b.minor) {
+                  return 1;
+                }
+              
+                if(a.major == b.major && a.minor == b.minor && a.patch > b.patch) {
+                  return 1;
+                }
+              
+                return -1;
             });
 
-        branchNames = [...branchNames, 'master'];
+        branchNamesToMerge = [...branchNames, 'master'];
 
-        console.log(branchNames);
+        let mergedBranch = branchName;
+
+        for(const branchNameToMerge of branchNamesToMerge) {
+            const response = await octokit.repos.merge({
+                owner: repoOwner,
+                repo: repoName,
+                base: branchNameToMerge,
+                head: mergedBranch,
+                commit_message: `Automatic merge from branch ${mergedBranch} into ${branchNameToMerge}`
+              });
+
+            if(response.status == 409) {
+                throw new Error(`Error while merge branch ${mergedBranch} into ${branchNameToMerge}`)
+            }
+
+            branchNameToMerge = mergedBranch;
+        }
+
+        console.log('Operation completed');
     } catch (error) {
         core.setFailed(error);
     }    
