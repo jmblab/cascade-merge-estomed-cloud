@@ -41,7 +41,9 @@ async function run() {
             per_page: 100
         });
 
-        console.log(response.data);
+        const branchNames = response.data.map(d => d.ref.replace('refs/', '').replace('heads/', ''));
+
+        console.log(branchNames);
     } catch (error) {
         core.setFailed(error.message);
     }    
