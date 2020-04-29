@@ -58,8 +58,8 @@ async function run() {
         let branchNames = response.data
             .map(d => d.ref.replace('refs/', '').replace('heads/', ''))
             .map(d => getReleaseData(d))
-            .filter(data => {
-                if(!data) {
+            .filter(data => {                
+                if(data === null) {
                     return false;
                 }
 
