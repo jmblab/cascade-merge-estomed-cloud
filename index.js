@@ -102,21 +102,37 @@ async function run() {
         let mergedBranch = branchName;
 
         for(const branchNameToMerge of branchNamesToMerge) {
-            const a = {
+            const commitName = `Automatic merge from branch ${mergedBranch} into ${branchNameToMerge}`;
+            const base = `refs/heads/${branchNameToMerge}`;
+            const head = `refs/heads/${mergedBranch}`;
+
+            const mergePayload = {
                 owner: repoOwner,
                 repo: repoName,
-                base: `refs/heads/${branchNameToMerge}`,
-                head: `refs/heads/${mergedBranch}`,
-                commit_message: `Automatic merge from branch ${mergedBranch} into ${branchNameToMerge}`
+                base,
+                head,
+                commit_message: commitName
             };
 
-            console.log(a);
-
-            const response = await octokit.repos.merge(a);
-
-            if(response.status == 409) {
-                throw new Error(`Error while merge branch ${mergedBranch} into ${branchNameToMerge}`)
+            let response = null;
+            try {
+                response  = await octokit.repos.merge(mergePayload);
             }
+            catch {
+                if(response.status == 409) {
+                    await octokit.pulls.create({
+                        owner: repoOwner,
+                        repo: repoName,
+                        title: commitName,
+                        body: commitName,
+                        head,
+                        base,
+                    });
+
+                    throw new Error(`Error while merge branch ${mergedBranch} into ${branchNameToMerge}`);
+                }
+            }
+            
 
             mergedBranch = branchNameToMerge;
         }
