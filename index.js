@@ -123,7 +123,7 @@ async function run() {
 
         console.log('Operation completed');
     } catch (error) {
-        core.setFailed(error);
+        core.setFailed(error.toString());
     }    
 }
 
