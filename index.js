@@ -98,26 +98,27 @@ async function run() {
                 return -1;
             });
 
-        branchNamesToMerge = [...branchNames, 'master'];
-
-        console.log(branchNamesToMerge);
-
+        const branchNamesToMerge = [...branchNames, 'master'];
         let mergedBranch = branchName;
 
         for(const branchNameToMerge of branchNamesToMerge) {
-            const response = await octokit.repos.merge({
+            const a = {
                 owner: repoOwner,
                 repo: repoName,
                 base: branchNameToMerge,
                 head: mergedBranch,
                 commit_message: `Automatic merge from branch ${mergedBranch} into ${branchNameToMerge}`
-              });
+            };
 
-            if(response.status == 409) {
-                throw new Error(`Error while merge branch ${mergedBranch} into ${branchNameToMerge}`)
-            }
+            console.log(a);
 
-            branchNameToMerge = mergedBranch;
+            //const response = await octokit.repos.merge();
+
+            // if(response.status == 409) {
+            //     throw new Error(`Error while merge branch ${mergedBranch} into ${branchNameToMerge}`)
+            // }
+
+            // branchNameToMerge = mergedBranch;
         }
 
         console.log('Operation completed');
