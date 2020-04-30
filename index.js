@@ -118,7 +118,7 @@ async function run() {
                 throw new Error(`Error while merge branch ${mergedBranch} into ${branchNameToMerge}`)
             }
 
-            branchNameToMerge = mergedBranch;
+            mergedBranch = branchNameToMerge;
         }
 
         console.log('Operation completed');
