@@ -105,20 +105,20 @@ async function run() {
             const a = {
                 owner: repoOwner,
                 repo: repoName,
-                base: branchNameToMerge,
-                head: mergedBranch,
+                base: `refs/heads/${branchNameToMerge}`,
+                head: `refs/heads/${mergedBranch}`,
                 commit_message: `Automatic merge from branch ${mergedBranch} into ${branchNameToMerge}`
             };
 
             console.log(a);
 
-            //const response = await octokit.repos.merge();
+            const response = await octokit.repos.merge(a);
 
-            // if(response.status == 409) {
-            //     throw new Error(`Error while merge branch ${mergedBranch} into ${branchNameToMerge}`)
-            // }
+            if(response.status == 409) {
+                throw new Error(`Error while merge branch ${mergedBranch} into ${branchNameToMerge}`)
+            }
 
-            // branchNameToMerge = mergedBranch;
+            branchNameToMerge = mergedBranch;
         }
 
         console.log('Operation completed');
