@@ -1,8 +1,8 @@
 name: 'Hello World'
 description: 'Greet someone and record the time'
 inputs:
-  repo-key:
-    description: 'Repo secret key'
+  token:
+    description: 'Token'
     required: true
     default: ''
   branch:
@@ -11,6 +11,10 @@ inputs:
     default: ''
   repo:
     description: 'Current repo'
+    required: true
+    default: ''
+  owner:
+    description: 'Owner repo'
     required: true
     default: ''
 outputs:
