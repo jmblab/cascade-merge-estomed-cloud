@@ -118,8 +118,8 @@ async function run() {
             try {
                 response  = await octokit.repos.merge(mergePayload);
             }
-            catch {
-                if(response.status == 409) {
+            catch(error) {
+                if(error.status == 409) {
                     await octokit.pulls.create({
                         owner: repoOwner,
                         repo: repoName,
