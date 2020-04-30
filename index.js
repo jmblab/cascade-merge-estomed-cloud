@@ -1,20 +1,6 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-
-function getReleaseData(branchName) {
-    const versionRegex = new RegExp('^(?<mainBranch>.*)\\/(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$');
-    const regexMatch = versionRegex.exec(branchName);
-
-    if(!regexMatch) {
-        return null;
-    }
-
-    const major = regexMatch.groups.major * 1;
-    const minor = regexMatch.groups.minor * 1;
-    const patch = regexMatch.groups.patch * 1;
-
-    return { major, minor, patch }
-}
+const getReleaseData = require('./helpers').getReleaseData;
 
 async function run() {
     try {
@@ -39,14 +25,6 @@ async function run() {
             console.log('Not need cascade merge');
             return;
         }
-    
-        const major = branchData.major;
-        const minor = branchData.minor;
-        const patch = branchData.patch;
-    
-        console.log(`Major version: ${major}`);
-        console.log(`Major version: ${minor}`);
-        console.log(`Patch version: ${patch}`);
 
         const response = await octokit.git.listMatchingRefs({
             owner: repoOwner,
@@ -131,8 +109,7 @@ async function run() {
 
                     throw new Error(`Error while merge branch ${mergedBranch} into ${branchNameToMerge}`);
                 }
-            }
-            
+            }            
 
             mergedBranch = branchNameToMerge;
         }
