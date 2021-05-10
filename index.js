@@ -97,6 +97,7 @@ async function run() {
                 response  = await octokit.repos.merge(mergePayload);
             }
             catch(error) {
+                console.log(JSON.stringify(response));
                 console.log(JSON.stringify(error));
                 if(error.status == 409) {
                     const failurePullRequestName = `Automatic merge failure from branch ${mergedBranch} into ${branchNameToMerge}`;
