@@ -19,11 +19,11 @@ function getReleaseData(branchName) {
 async function run() {
     try {
         const branchRefName = core.getInput('branch');
-        const branchPrefix = core.getInput('external-repo-branch-prefix');
+        // const branchPrefix = core.getInput('external-repo-branch-prefix');
 
-				if(!branchRefName.includes(branchPrefix)){
-					console.log('Not need estomed cloud cascade merge');
-				}
+				// if(!branchRefName.includes(branchPrefix)){
+				// 	console.log('Not need estomed cloud cascade merge');
+				// }
 
         const repoNameWithOwner = core.getInput('external-repo-name');    
         const repoOwner = core.getInput('owner');    
@@ -198,6 +198,9 @@ async function run() {
 								throw new Error(`Error while creating branch ${branchName} in ${externalRepoName}`);
 							}
 						}
+
+						throw new Error(`Error while creating branch ${branchName} in ${externalRepoName}`);
+
 					}
 				}
 				 
