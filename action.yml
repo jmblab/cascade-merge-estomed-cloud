@@ -1,5 +1,5 @@
-name: 'Cascade merge'
-description: 'Greet someone and record the time'
+name: 'Cascade merge Estomed cloud'
+description: 'Cascade merge Estomed cloud'
 inputs:
   token:
     description: 'Token'
@@ -9,12 +9,16 @@ inputs:
     description: 'Current branch'
     required: true
     default: ''
-  repo:
-    description: 'Current repo'
-    required: true
-    default: ''
   owner:
     description: 'Owner repo'
+    required: true
+    default: ''
+  external-repo-name:
+    description: 'External repo name to cascade merge'
+    required: true
+    default: ''
+  external-repo-branch-prefix:
+    description: 'Extarnal repo branch prefix to cascade merge'
     required: true
     default: ''
 outputs:
