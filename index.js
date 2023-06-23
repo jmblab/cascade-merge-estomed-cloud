@@ -21,12 +21,6 @@ function getReleaseData(branchName) {
 async function run() {
   try {
     const branchRefName = core.getInput("branch");
-    // const branchPrefix = core.getInput('external-repo-branch-prefix');
-
-    // if(!branchRefName.includes(branchPrefix)){
-    // 	console.log('Not need estomed cloud cascade merge');
-    // }
-
     const repoNameWithOwner = core.getInput("external-repo-name");
     const repoOwner = core.getInput("owner");
     const token = core.getInput("token");
@@ -47,89 +41,13 @@ async function run() {
       return;
     }
 
-    // const response = await octokit.git.listMatchingRefs({
-    //     owner: repoOwner,
-    //     repo: externalRepoName,
-    //     ref: 'heads/release',
-    //     per_page: 100
-    // });
-
-    // let branchNames = response.data
-    //     .filter(d => !!d.ref)
-    //     .map(d => d.ref.replace('refs/', '').replace('heads/', ''))
-    //     .filter(d => {
-    //         const data = getReleaseData(d);
-
-    //         if(data === null) {
-    //             return false;
-    //         }
-
-    //         if(data.major == branchData.major && data.minor == branchData.minor && data.patch > branchData.patch) {
-    //             return true;
-    //         }
-
-    //         if(data.major == branchData.major && data.minor > branchData.minor) {
-    //             return true;
-    //         }
-
-    //         if(data.major > branchData.major) {
-    //             return true;
-    //         }
-
-    //         return false;
-    //     })
-    //     .sort((da, db) => {
-    //         const a = getReleaseData(da);
-    //         const b = getReleaseData(db);
-
-    //         if(a.major > b.major) {
-    //           return 1;
-    //         }
-
-    //         if(a.major == b.major && a.minor > b.minor) {
-    //           return 1;
-    //         }
-
-    //         if(a.major == b.major && a.minor == b.minor && a.patch > b.patch) {
-    //           return 1;
-    //         }
-
-    //         return -1;
-    //     });
-
-    // const branchNamesToMerge = [...branchNames, 'master'];
-
+    let branchOnExternalRepo;
     try {
-      const branchOnExternalRepo = await octokit.repos.getBranch({
+      branchOnExternalRepo = await octokit.repos.getBranch({
         owner: repoOwner,
         repo: externalRepoName,
         branch: branchName,
       });
-
-      if (branchOnExternalRepo.status == 200) {
-				console.log(`External repo branch found, name: ${branchOnExternalRepo.data.name}`);
-
-        const currentCommit = await octokit.git.getCommit({
-          owner,
-          externalRepoName,
-          commit_sha: branchOnExternalRepo.data.sha,
-        });
-
-        const newCommit = await octokit.git.createCommit({
-          owner,
-          externalRepoName,
-          message: "Automatic empty commit to trigger build",
-          tree: currentCommit.data.tree.sha,
-          parents: [currentCommit.data.sha],
-        });
-
-        await octokit.git.updateRef({
-          owner,
-          repo,
-          ref: `heads/${branchName}`,
-          sha: newCommit.data.sha,
-        });
-      }
     } catch (error) {
       console.log(JSON.stringify(error));
       if (error.status == 404 || error.status == 301) {
@@ -190,68 +108,68 @@ async function run() {
             return -1;
           });
 
-        if (branchNames && branchNames.some((e) => e)) {
-          let earlierBranch = branchName[0];
-
-          const response = await octokit.git.createRef({
-            owner: owner,
-            repo: externalRepoName,
-            ref: branchName,
-            sha: earlierBranch.sha,
-          });
-
-          if (response.status != 201) {
-            throw new Error(
-              `Error while creating branch ${branchName} in ${externalRepoName}`
-            );
-          }
+        if (!branchNames && !branchNames.some((e) => e)) {
+          throw new Error(`Not found branches in ${externalRepoName} `);
         }
 
-        throw new Error(
-          `Error while creating branch ${branchName} in ${externalRepoName}`
-        );
+        let earlierBranch = branchName[0];
+
+        const createRefResponse = await octokit.git.createRef({
+          owner: owner,
+          repo: externalRepoName,
+          ref: branchName,
+          sha: earlierBranch.data.object.sha,
+        });
+
+        if (createRefResponse.status != 201) {
+          throw new Error(
+            `Error while creating branch ${branchName} in ${externalRepoName}`
+          );
+        }
+
+        branchOnExternalRepo = await octokit.repos.getBranch({
+          owner: repoOwner,
+          repo: externalRepoName,
+          branch: branchName,
+        });
       }
     }
+    try {
+      if (branchOnExternalRepo && branchOnExternalRepo.status == 200) {
+        console.log(
+          `External repo branch found, name: ${branchOnExternalRepo.data.name}`
+        );
 
-    // for(const branchNameToMerge of branchNamesToMerge) {
-    //     const commitName = `Automatic merge from branch ${mergedBranch} into ${branchNameToMerge}`;
-    //     const base = `refs/heads/${branchNameToMerge}`;
-    //     const head = `refs/heads/${mergedBranch}`;
+        const currentCommit = await octokit.git.getCommit({
+          owner,
+          externalRepoName,
+          commit_sha: branchOnExternalRepo.data.object.sha,
+        });
 
-    //     const mergePayload = {
-    //         owner: repoOwner,
-    //         repo: externalRepoName,
-    //         base,
-    //         head,
-    //         commit_message: commitName
-    //     };
+        console.log(recieved);
 
-    //     let response = null;
-    //     try {
-    //         response  = await octokit.repos.merge(mergePayload);
-    //     }
-    //     catch(error) {
-    //         console.log(JSON.stringify(response));
-    //         console.log(JSON.stringify(error));
-    //         if(error.status == 409) {
-    //             const failurePullRequestName = `Automatic merge failure from branch ${mergedBranch} into ${branchNameToMerge}`;
+        const newCommit = await octokit.git.createCommit({
+          owner,
+          externalRepoName,
+          message: "Automatic empty commit to trigger build",
+          tree: currentCommit.data.tree.sha,
+          parents: [currentCommit.data.sha],
+        });
 
-    //             await octokit.pulls.create({
-    //                 owner: repoOwner,
-    //                 repo: externalRepoName,
-    //                 title: failurePullRequestName,
-    //                 body: failurePullRequestName,
-    //                 head,
-    //                 base,
-    //             });
+        await octokit.git.updateRef({
+          owner,
+          repo,
+          ref: `heads/${branchName}`,
+          sha: newCommit.data.sha,
+        });
+      }
+    } catch (error) {
+      console.log(JSON.stringify(error));
 
-    //             throw new Error(`Error while merge branch ${mergedBranch} into ${branchNameToMerge}`);
-    //         }
-    //     }
-
-    //     mergedBranch = branchNameToMerge;
-    // }
-
+      throw new Error(
+        `Error while creating commit on branch: ${branchName} in ${externalRepoName}`
+      );
+    }
     console.log("Operation completed");
   } catch (error) {
     core.setFailed(error.toString());
