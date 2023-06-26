@@ -37,7 +37,7 @@ async function run() {
     const branchData = getReleaseData(branchName);
 
     if (!branchData) {
-      console.log("Not need cascade merge");
+      console.log("Not need external proj build");
       return;
     }
 
@@ -145,8 +145,6 @@ async function run() {
           externalRepoName,
           commit_sha: branchOnExternalRepo.data.object.sha,
         });
-
-        console.log(recieved);
 
         const newCommit = await octokit.git.createCommit({
           owner,
