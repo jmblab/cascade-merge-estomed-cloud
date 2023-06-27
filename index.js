@@ -113,7 +113,8 @@ async function run() {
         }
 
         let earlierBranch = branchName[0];
-
+		console.log(`Earlier branch found: ${earlierBranch.data.object.name}`);
+				
         const createRefResponse = await octokit.git.createRef({
           owner: owner,
           repo: externalRepoName,
