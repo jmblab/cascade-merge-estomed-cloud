@@ -1,5 +1,5 @@
-name: 'Cascade merge Estomed cloud'
-description: 'Cascade merge Estomed cloud'
+name: 'External project branch build'
+description: 'External project branch build'
 inputs:
   token:
     description: 'Token'
