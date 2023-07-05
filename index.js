@@ -129,7 +129,7 @@ async function run() {
         const createRefResponse = await octokit.git.createRef({
           owner: repoOwner,
           repo: externalRepoName,
-          ref: earlierBranch.name,
+          ref: branchRefName,
           sha: earlierBranch.sha,
         });
 
