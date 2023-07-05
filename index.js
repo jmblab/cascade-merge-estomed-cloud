@@ -67,7 +67,7 @@ async function run() {
 						let name = d.ref.replace("refs/", "").replace("heads/", "");
 						let sha = d.object.sha;
 
-						return {name: name, sha: sha};
+						return {name: d.ref, sha: sha};
 					})
           .filter((d) => {
             const data = getReleaseData(d.name);
