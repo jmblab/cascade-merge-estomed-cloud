@@ -116,13 +116,13 @@ async function run() {
 				console.log(branchNames);
 
         let earlierBranch = branchName[0];
-		console.log(`Earlier branch found: ${earlierBranch.data.object.name}`);
+		console.log(`Earlier branch found: ${earlierBranch.data.name}`);
 				
         const createRefResponse = await octokit.git.createRef({
           owner: owner,
           repo: externalRepoName,
           ref: branchName,
-          sha: earlierBranch.data.object.sha,
+          sha: earlierBranch.data.sha,
         });
 
         if (createRefResponse.status != 201) {
@@ -147,7 +147,7 @@ async function run() {
         const currentCommit = await octokit.git.getCommit({
           owner,
           externalRepoName,
-          commit_sha: branchOnExternalRepo.data.object.sha,
+          commit_sha: branchOnExternalRepo.data.sha,
         });
 
         const newCommit = await octokit.git.createCommit({
