@@ -148,6 +148,9 @@ async function run() {
     }
     try {
       if (branchOnExternalRepo && branchOnExternalRepo.status == 200) {
+				console.log(
+          `branch : ${branchOnExternalRepo}`
+        );
         console.log(
           `External repo branch found, name: ${branchOnExternalRepo.data.name}`
         );
@@ -158,6 +161,9 @@ async function run() {
           commit_sha: branchOnExternalRepo.data.sha,
         });
 
+				console.log(
+          `current commit: ${currentCommit}`
+        );
         const newCommit = await octokit.git.createCommit({
           owner,
           externalRepoName,
@@ -165,7 +171,9 @@ async function run() {
           tree: currentCommit.data.tree.sha,
           parents: [currentCommit.data.sha],
         });
-
+				console.log(
+          `new commit: ${newCommit}`
+        );
         await octokit.git.updateRef({
           owner,
           repo,
