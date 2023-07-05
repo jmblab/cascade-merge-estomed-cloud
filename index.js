@@ -62,9 +62,15 @@ async function run() {
 
         let branchNames = response.data
           .filter((d) => !!d.ref)
-          .map((d) => d.ref.replace("refs/", "").replace("heads/", ""))
+          .map((d) => {
+						console.log(d);
+						let name = d.ref.replace("refs/", "").replace("heads/", "");
+						let sha = d.object.sha;
+
+						return {name: name, sha: sha};
+					})
           .filter((d) => {
-            const data = getReleaseData(d);
+            const data = getReleaseData(d.name);
 
             if (data === null) {
               return false;
@@ -92,8 +98,8 @@ async function run() {
             return false;
           })
           .sort((da, db) => {
-            const a = getReleaseData(da);
-            const b = getReleaseData(db);
+            const a = getReleaseData(da.name);
+            const b = getReleaseData(db.name);
 
             if (a.major < b.major) {
               return 1;
@@ -116,15 +122,15 @@ async function run() {
 				console.log(branchNames);
 
         let earlierBranch = branchNames[0];
-		console.log(`Earlier branch : ${earlierBranch}`);
+		console.log(`Earlier branch : ${earlierBranch.name}`);
 
 		//console.log(`Earlier branch found: ${earlierBranch.data.name}`);
 				
         const createRefResponse = await octokit.git.createRef({
-          owner: owner,
+          owner: repoOwner,
           repo: externalRepoName,
-          ref: branchName,
-          sha: earlierBranch.data.sha,
+          ref: earlierBranch.name,
+          sha: earlierBranch.sha,
         });
 
         if (createRefResponse.status != 201) {
