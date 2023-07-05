@@ -51,6 +51,8 @@ async function run() {
     } catch (error) {
       console.log(JSON.stringify(error));
       if (error.status == 404 || error.status == 301) {
+				console.log('404');
+
         const response = await octokit.git.listMatchingRefs({
           owner: repoOwner,
           repo: externalRepoName,
@@ -111,6 +113,7 @@ async function run() {
         if (!branchNames && !branchNames.some((e) => e)) {
           throw new Error(`Not found branches in ${externalRepoName} `);
         }
+				console.log(branchNames);
 
         let earlierBranch = branchName[0];
 		console.log(`Earlier branch found: ${earlierBranch.data.object.name}`);
