@@ -149,16 +149,16 @@ async function run() {
     try {
       if (branchOnExternalRepo && branchOnExternalRepo.status == 200) {
 				console.log(
-          `branch : ${branchOnExternalRepo}`
+          `branch : ${branchOnExternalRepo.data}`
         );
         console.log(
           `External repo branch found, name: ${branchOnExternalRepo.data.name}`
         );
 
         const currentCommit = await octokit.git.getCommit({
-          owner,
-          externalRepoName,
-          commit_sha: branchOnExternalRepo.data.sha,
+          owner: repoOwner,
+          repo: externalRepoName,
+          ref: branchOnExternalRepo.data.sha,
         });
 
 				console.log(
