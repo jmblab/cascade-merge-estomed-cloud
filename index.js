@@ -148,30 +148,13 @@ async function run() {
     }
     try {
       if (branchOnExternalRepo && branchOnExternalRepo.status == 200) {
-				console.log(
-          `branch : ${branchOnExternalRepo.data}`
-        );
-        console.log(
-          `External repo branch found, name: ${branchOnExternalRepo.data.name}`
-        );
-				console.log(
-          `current commit: ${branchOnExternalRepo.data.commit.sha}`
-        );
-				console.log(
-          `current commit: ${branchOnExternalRepo.data.commit.url}`
-        );
+				
         const currentCommit = await octokit.git.getCommit({
           owner: repoOwner,
           repo: externalRepoName,
           ref: `heads/${branchOnExternalRepo.data.name}`,
 					commit_sha: branchOnExternalRepo.data.commit.sha
         });
-
-				console.log(          'current');
-
-				console.log(
-          `current commit: ${JSON.stringify(currentCommit.data)}`
-        );
 
         const newCommit = await octokit.git.createCommit({
           owner: repoOwner,
@@ -180,9 +163,7 @@ async function run() {
           tree: currentCommit.data.tree.sha,
           parents: [currentCommit.data.sha],
         });
-				console.log(
-          `new commit: ${newCommit}`
-        );
+			
         await octokit.git.updateRef({
           owner: repoOwner,
           repo: externalRepoName,
@@ -192,7 +173,6 @@ async function run() {
       }
     } catch (error) {
       console.log(JSON.stringify(error));
-      console.log(error);
 
       throw new Error(
         `Error while creating commit on branch: ${branchName} in ${externalRepoName}`
