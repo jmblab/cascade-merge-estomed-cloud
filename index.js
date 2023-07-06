@@ -160,10 +160,10 @@ async function run() {
 				console.log(
           `current commit: ${branchOnExternalRepo.data.commit.url}`
         );
-        const currentCommit = await octokit.git.getCommit({
+        const currentCommit = await octokit.git.comm({
           owner: repoOwner,
           repo: externalRepoName,
-          commit_sha: branchOnExternalRepo.data.commit.sha,
+          ref: `heads/${branchOnExternalRepo.data.name}`,
         });
 
 				console.log(          'current');
@@ -191,6 +191,7 @@ async function run() {
       }
     } catch (error) {
       console.log(JSON.stringify(error));
+      console.log(error);
 
       throw new Error(
         `Error while creating commit on branch: ${branchName} in ${externalRepoName}`
