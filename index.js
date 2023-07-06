@@ -155,13 +155,16 @@ async function run() {
           `External repo branch found, name: ${branchOnExternalRepo.data.name}`
         );
 				console.log(
-          `current commit: ${branchOnExternalRepo.data.sha}`
+          `current commit: ${branchOnExternalRepo.data.commit.sha}`
+        );
+				console.log(
+          `current commit: ${branchOnExternalRepo.data.commit.url}`
         );
         const currentCommit = await octokit.git.getCommit({
           owner: repoOwner,
           repo: externalRepoName,
-          ref: branchOnExternalRepo.data.sha,
-					commit_sha: branchOnExternalRepo.data.name
+          ref: branchOnExternalRepo.data.name,
+					commit_sha: branchOnExternalRepo.data.commit.sha
         });
 
 				console.log(          'current');
