@@ -161,9 +161,12 @@ async function run() {
           ref: branchOnExternalRepo.data.sha,
         });
 
+				console.log(          'current');
+
 				console.log(
-          `current commit: ${currentCommit}`
+          `current commit: ${branchOnExternalRepo.data.sha}`
         );
+
         const newCommit = await octokit.git.createCommit({
           owner,
           externalRepoName,
