@@ -170,12 +170,12 @@ async function run() {
 				console.log(          'current');
 
 				console.log(
-          `current commit: ${branchOnExternalRepo.data.name}`
+          `current commit: ${JSON.stringify(currentCommit.data)}`
         );
 
         const newCommit = await octokit.git.createCommit({
-          owner,
-          externalRepoName,
+          owner: repoOwner,
+          repo: externalRepoName,
           message: "Automatic empty commit to trigger build",
           tree: currentCommit.data.tree.sha,
           parents: [currentCommit.data.sha],
@@ -184,8 +184,8 @@ async function run() {
           `new commit: ${newCommit}`
         );
         await octokit.git.updateRef({
-          owner,
-          repo,
+          owner: repoOwner,
+          repo: externalRepoName,
           ref: `heads/${branchName}`,
           sha: newCommit.data.sha,
         });
