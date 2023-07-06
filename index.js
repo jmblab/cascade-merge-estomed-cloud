@@ -163,8 +163,8 @@ async function run() {
         const currentCommit = await octokit.git.getCommit({
           owner: repoOwner,
           repo: externalRepoName,
-          ref: branchOnExternalRepo.data.name,
-					commit_sha: branchOnExternalRepo.data.commit.sha
+          ref: branchOnExternalRepo.data.commit.sha,
+					
         });
 
 				console.log(          'current');
