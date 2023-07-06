@@ -160,7 +160,7 @@ async function run() {
 				console.log(
           `current commit: ${branchOnExternalRepo.data.commit.url}`
         );
-        const currentCommit = await octokit.git.comm({
+        const currentCommit = await octokit.git.getCommit({
           owner: repoOwner,
           repo: externalRepoName,
           ref: `heads/${branchOnExternalRepo.data.name}`,
